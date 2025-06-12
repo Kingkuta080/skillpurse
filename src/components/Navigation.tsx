@@ -26,7 +26,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-primary hover:scale-105 transition-transform duration-200">
-              SkillPurse
+              <img src="/logo.png" alt="SkillPurse Logo" className="w-[10rem]" />
             </Link>
           </div>
           

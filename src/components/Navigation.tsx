@@ -72,9 +72,9 @@ const Navigation = () => {
             </>
           )}
           <Link to="/contact" className="mobile-nav-link">Contact</Link>
-          <Link to="/join-waitlist" className="btn-primary w-full mt-4">
+          {/* <Link to="/join-waitlist" className="btn-primary w-full mt-4">
             Join Waitlist
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>

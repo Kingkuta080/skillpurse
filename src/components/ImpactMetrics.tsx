@@ -7,7 +7,7 @@ const ImpactMetrics = () => {
       icon: Users,
       number: "10k+",
       label: "Youth in First Year",
-      description: "Expected to be trained and empowered in our first operational year"
+      description: "Our Year 1 goal is to onboard 5,000 active freelancers and equip 10,000 learners with transformative skills across Nigeria, Pakistan, and Bangladesh."
     },
     {
       icon: TrendingUp,

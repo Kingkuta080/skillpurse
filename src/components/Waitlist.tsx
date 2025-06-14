@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, ArrowRight, Info, Users, Handshake, HelpCircle } from 'lucide-react';
+import { Mail, ArrowRight, Info, Users, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Waitlist = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formType, setFormType] = useState<'waitlist' | 'partner' | 'question'>('waitlist');
+  const [formType, setFormType] = useState<'waitlist' | 'question'>('waitlist');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,32 +37,6 @@ const Waitlist = () => {
                 disabled={isSubmitted}
               >
                 {isSubmitted ? '✅ Joined!' : '🚀 Join Now'}
-                {!isSubmitted && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />}
-              </button>
-            </div>
-          </form>
-        );
-      case 'partner':
-        return (
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="flex-1 relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your organization's email"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg text-dark border-0 focus:ring-2 focus:ring-white/30 outline-none text-sm sm:text-base"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn-secondary-white group text-sm sm:text-base px-4 sm:px-6"
-                disabled={isSubmitted}
-              >
-                {isSubmitted ? '✅ Submitted!' : '🤝 Partner'}
                 {!isSubmitted && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />}
               </button>
             </div>
@@ -103,15 +77,6 @@ const Waitlist = () => {
           >
             <Users className="inline-block mr-2" size={20} />
             Join Waitlist
-          </button>
-          <button
-            onClick={() => setFormType('partner')}
-            className={`px-6 py-2 rounded-lg transition-colors ${
-              formType === 'partner' ? 'bg-white text-primary' : 'bg-white/10 hover:bg-white/20'
-            }`}
-          >
-            <Handshake className="inline-block mr-2" size={20} />
-            Partner With Us
           </button>
           <button
             onClick={() => setFormType('question')}

@@ -25,7 +25,7 @@ const Mission = () => {
                   <GraduationCap className="text-primary" size={32} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-dark">10,000+ Individuals</h3>
+                  <h3 className="text-2xl font-bold text-dark">1,000,000+ Individuals</h3>
                   <p className="text-gray-600">Train and empower by 2030 with life-changing skills</p>
                 </div>
               </div>

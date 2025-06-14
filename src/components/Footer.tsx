@@ -38,7 +38,6 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Join Us</h3>
             <ul className="space-y-2">
               <li><a href="#waitlist" className="footer-link hover:text-primary transition-colors">Join our waitlist</a></li>
-              <li><a href="#partner" className="footer-link hover:text-primary transition-colors">Partner with us</a></li>
               <li><a href="mailto:skillpurse.org@gmail.com" className="footer-link hover:text-primary transition-colors">Ask questions</a></li>
             </ul>
           </div>

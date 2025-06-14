@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 import { Mail, MessageSquare, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import emailjs from '@emailjs/browser';
+import { EMAILJS_CONFIG } from '../config/emailjs';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const ContactUs = () => {
     message: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -21,14 +24,36 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATES.CONTACT,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_name: 'SkillPurse Team',
+        },
+        EMAILJS_CONFIG.PUBLIC_KEY
+      );
+
+      setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 5000);
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      setError('Failed to send message. Please try again later.');
+      console.error('EmailJS error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const contactInfo = [
@@ -63,8 +88,7 @@ const ContactUs = () => {
             Get in <span className="text-primary">Touch</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Have questions about SkillPurse? Want to partner with us? 
-            We'd love to hear from you.
+            Have questions about SkillPurse? We'd love to hear from you.
           </p>
         </div>
       </section>
@@ -113,6 +137,12 @@ const ContactUs = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm">
+                      {error}
+                    </div>
+                  )}
+                  
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                       Full Name *
@@ -157,7 +187,6 @@ const ContactUs = () => {
                     >
                       <option value="">Select a subject</option>
                       <option value="general">General Inquiry</option>
-                      <option value="partnership">Partnership Opportunity</option>
                       <option value="support">Technical Support</option>
                       <option value="feedback">Feedback</option>
                       <option value="media">Media Inquiry</option>
@@ -183,9 +212,22 @@ const ContactUs = () => {
                   <button
                     type="submit"
                     className="w-full btn-primary group"
+                    disabled={isLoading}
                   >
-                    <Send className="mr-2 group-hover:translate-x-1 transition-transform" size={20} />
-                    Send Message
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : (
+                      <>
+                        <Send className="mr-2 group-hover:translate-x-1 transition-transform" size={20} />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </form>
               )}
@@ -196,26 +238,12 @@ const ContactUs = () => {
               <div>
                 <h3 className="text-2xl font-bold text-dark mb-4">Let's Connect</h3>
                 <p className="text-gray-600 mb-6">
-                  Whether you're interested in joining our mission, exploring partnership opportunities, 
-                  or just want to learn more about SkillPurse, we're here to help.
+                  Whether you're interested in joining our mission or just want to learn more about SkillPurse, 
+                  we're here to help.
                 </p>
               </div>
 
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h4 className="text-lg font-semibold text-dark mb-3">Partnership Opportunities</h4>
-                <p className="text-gray-600 text-sm mb-4">
-                  We're always looking for organizations that share our vision of empowering 
-                  the unbanked through technology and skills development.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Training Organizations</li>
-                  <li>• Mobile Money Providers</li>
-                  <li>• Educational Institutions</li>
-                  <li>• NGOs and Development Partners</li>
-                </ul>
-              </div>
-
-              <div className="bg-primary/5 rounded-xl p-6">
                 <h4 className="text-lg font-semibold text-dark mb-3">Our Response Time</h4>
                 <p className="text-gray-600 text-sm">
                   We typically respond to all inquiries within 24 hours during business days. 

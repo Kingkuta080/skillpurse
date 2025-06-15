@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
-import { Mail, ArrowRight, CheckCircle, Users, Gift, Zap } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle, Users, Gift, Zap, Shield } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG } from '../config/emailjs';
 
 const JoinWaitlist = () => {
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [skills, setSkills] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    fullName: '',
+    userType: '',
+    country: '',
+    skills: '',
+    excitement: '',
+    earlyAccess: '',
+    paymentMethod: '',
+    privacyConsent: false
+  });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,31 +40,26 @@ const JoinWaitlist = () => {
         EMAILJS_CONFIG.SERVICE_ID,
         EMAILJS_CONFIG.TEMPLATES.WAITLIST,
         {
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          skills: skills,
+          ...formData,
           to_name: 'SkillPurse Team',
-        },
-        EMAILJS_CONFIG.PUBLIC_KEY
-      );
-
-      // Send automatic reply to user
-      await emailjs.send(
-        EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.TEMPLATES.WAITLIST_REPLY,
-        {
-          to_name: firstName,
-          to_email: email,
+          time: new Date().toLocaleString(),
+          reply_to: formData.email // This ensures replies go to the user
         },
         EMAILJS_CONFIG.PUBLIC_KEY
       );
 
       setIsSubmitted(true);
-      setEmail('');
-      setFirstName('');
-      setLastName('');
-      setSkills('');
+      setFormData({
+        email: '',
+        fullName: '',
+        userType: '',
+        country: '',
+        skills: '',
+        excitement: '',
+        earlyAccess: '',
+        paymentMethod: '',
+        privacyConsent: false
+      });
       setTimeout(() => {
         setIsSubmitted(false);
       }, 5000);
@@ -87,11 +97,16 @@ const JoinWaitlist = () => {
       <section className="pt-24 pb-12 bg-gradient-to-br from-primary/5 to-primary/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-dark mb-6">
-            Join the <span className="text-primary">Future</span> of Work
+            Join the SkillPurse Waitlist – Be Part of the Future of Freelancing
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Be part of the movement that's unlocking global earning opportunities for the unbanked. 
-            Get early access and exclusive benefits.
+            💡 SkillPurse is a bold new platform using USDC, blockchain, and Circle Wallets to empower unbanked, underpaid, and overlooked youth with verified skills across Africa and the globe.
+          </p>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Whether you're a freelancer, a client looking to hire top talent, or a partner who believes in building an inclusive global economy—you're welcome here.
+          </p>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Sign up now to be notified as soon as we launch. Let's build the future of work together.
           </p>
         </div>
       </section>
@@ -117,7 +132,7 @@ const JoinWaitlist = () => {
       </section>
 
       {/* Waitlist Form */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl p-8 shadow-2xl">
             <div className="text-center mb-8">
@@ -131,7 +146,7 @@ const JoinWaitlist = () => {
                 </div>
               ) : (
                 <p className="text-gray-600">
-                  Fill out the form below to secure your early access to SkillPurse.
+                  Sign up now to be notified as soon as we launch. Let's build the future of work together.
                 </p>
               )}
             </div>
@@ -156,65 +171,178 @@ const JoinWaitlist = () => {
                   </div>
                 )}
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
+                    Email *
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     <input
                       type="email"
                       id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      placeholder="your@email.com"
+                      placeholder="example@gmail.com"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
+                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                    FULL NAME *
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="userType" className="block text-sm font-medium text-gray-700 mb-2">
+                    What best describes you? *
+                  </label>
+                  <select
+                    id="userType"
+                    name="userType"
+                    value={formData.userType}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    required
+                  >
+                    <option value="">Select an option</option>
+                    <option value="ecosystem">Ecosystem Partner/Organization</option>
+                    <option value="client">Hiring Clients</option>
+                    <option value="freelancer">Skilled Freelancer</option>
+                    <option value="curious">Just Curious/Supporter</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                    Country of Residence *
+                  </label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    required
+                  />
+                </div>
+
+                <div>
                   <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Skills/Interests (Optional)
+                    What skill do you have or hire for? *
                   </label>
                   <textarea
                     id="skills"
-                    value={skills}
-                    onChange={(e) => setSkills(e.target.value)}
+                    name="skills"
+                    value={formData.skills}
+                    onChange={handleInputChange}
                     rows={3}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
-                    placeholder="e.g., Web design, content writing, digital marketing..."
+                    required
                   />
+                </div>
+
+                <div>
+                  <label htmlFor="excitement" className="block text-sm font-medium text-gray-700 mb-2">
+                    Why are you excited about SkillPurse?
+                  </label>
+                  <textarea
+                    id="excitement"
+                    name="excitement"
+                    value={formData.excitement}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="earlyAccess" className="block text-sm font-medium text-gray-700 mb-2">
+                    Would you like early access, exclusive updates, or partnership opportunities? *
+                  </label>
+                  <select
+                    id="earlyAccess"
+                    name="earlyAccess"
+                    value={formData.earlyAccess}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    required
+                  >
+                    <option value="">Select an option</option>
+                    <option value="early_access">Yes, I want early access to the platform</option>
+                    <option value="hire">Yes, I want to hire freelancers</option>
+                    <option value="partner">Yes, I'd like to partner or collaborate</option>
+                    <option value="updates">Just keep me in the loop</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-2">
+                    What payment method would you prefer once SkillPurse is Launched? *
+                  </label>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    value={formData.paymentMethod}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    required
+                  >
+                    <option value="">Select an option</option>
+                    <option value="mobile_money">📲 Mobile Money (e.g., OPay, MTN MoMo, Smartcah, M-Pesa)</option>
+                    <option value="p2p">🤝 Peer-to-Peer (P2P agents in my area)</option>
+                    <option value="usdc">💳 USDC (Stablecoin) to crypto wallet (e.g., Bybit, Trust Wallet, Binance)</option>
+                    <option value="bank">🏦 Local Bank Transfer (if available)</option>
+                    <option value="cash">💵 Cash from a trusted payout partner or local agent</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <input
+                      type="checkbox"
+                      id="privacyConsent"
+                      name="privacyConsent"
+                      checked={formData.privacyConsent}
+                      onChange={handleInputChange}
+                      className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                      required
+                    />
+                    <label htmlFor="privacyConsent" className="text-sm text-gray-600">
+                      <span className="font-medium">YOUR DATA, YOUR PRIVACY 🔐</span>
+                      <br />
+                      We value your privacy. All information shared through this form is strictly confidential and will only be used to notify you about SkillPurse updates, early access opportunities, and relevant community announcements.
+                    </label>
+                  </div>
+                </div>
+
+                <div className="text-sm text-gray-500 mt-4">
+                  <p>Never submit passwords through Google Forms.</p>
+                  <p>This content is neither created nor endorsed by Google.</p>
+                  <p className="mt-2">
+                    <a href="#" className="text-primary hover:underline">Contact form owner</a> - 
+                    <a href="#" className="text-primary hover:underline ml-2">Terms of Service</a> - 
+                    <a href="#" className="text-primary hover:underline ml-2">Privacy Policy</a>
+                  </p>
+                  <p className="mt-2">
+                    <a href="#" className="text-primary hover:underline">Does this form look suspicious? Report</a>
+                  </p>
                 </div>
 
                 <button
@@ -228,7 +356,7 @@ const JoinWaitlist = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Joining...
+                      Submitting...
                     </span>
                   ) : (
                     <>

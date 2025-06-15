@@ -1,14 +1,8 @@
 import React from 'react';
 import { ArrowRight, Play } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
-  const scrollToWaitlist = () => {
-    const waitlistSection = document.getElementById('waitlist');
-    if (waitlistSection) {
-      waitlistSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10">
       {/* Animated background elements */}
@@ -38,13 +32,13 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up delay-500">
-              <button 
-                onClick={scrollToWaitlist}
+              <Link 
+                to="/join-waitlist"
                 className="btn-primary group text-sm sm:text-base"
               >
                 📩 Join Our Waitlist
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
-              </button>
+              </Link>
               {/* <button className="btn-secondary group text-sm sm:text-base">
                 <Play className="mr-2 group-hover:scale-110 transition-transform" size={20} />
                 Watch Demo
